@@ -33,19 +33,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var portController = TextEditingController();
   //Uint8List? data;
-  RawDatagramSocket? udpSocket;
+  RawDatagramSocket? socketPacket;
   List<String> receivedMessages = <String>[];
 
-  Future<void> listenForUdpPackets(int port) async {
+  Future<void> packetListener(int port) async {
     try {
       // udp socket bind it to the specified port
-      udpSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
+      socketPacket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
 
       // incoming packets
-      await udpSocket?.forEach((RawSocketEvent event) {
+      await socketPacket?.forEach((RawSocketEvent event) {
         if (event == RawSocketEvent.read) {
           // read the incoming packet
-          Datagram? dg = udpSocket?.receive();
+          Datagram? dg = socketPacket?.receive();
           var message = dg?.data;
           setState(() {
             if (message != null) {
@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          listenForUdpPackets(int.parse(portController.text));
+                          packetListener(int.parse(portController.text));
                           setState(() {
                             /* data = utf8.encode(
                                     'Socket is listening to port ${portController.text} ')
@@ -113,8 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          if (udpSocket != null) {
-                            udpSocket?.close();
+                          if (socketPacket != null) {
+                            socketPacket?.close();
                             setState(() {
                               /*data =
                                   utf8.encode('Socket Closed !') as Uint8List?;*/
@@ -126,14 +126,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          if (udpSocket != null) {
-                            udpSocket?.close();
+                          if (socketPacket != null) {
+                            socketPacket?.close();
                             setState(() {
                               receivedMessages = [];
                             });
                           }
                         },
-                        child: const Text('Clear The List'),
+                        child: const Text('Clear List'),
                       ),
                     ],
                   ),

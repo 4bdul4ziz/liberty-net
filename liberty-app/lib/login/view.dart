@@ -64,7 +64,7 @@ class LoginPage extends StatelessWidget {
                     });
                   },
                   child: const Text(
-                    'Start Login',
+                    'Connect',
                     style: TextStyle(fontSize: 16),
                   ),
                 )
